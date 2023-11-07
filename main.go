@@ -1,7 +1,7 @@
 package main
 
-import "github.com/LSapee/potatocoin/cli"
+import "github.com/LSapee/potatocoin/blockchain"
 
 func main() {
-	cli.Start()
+	blockchain.Blockchain().AddBlock("First")
 }
