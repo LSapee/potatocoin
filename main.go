@@ -1,7 +1,13 @@
 package main
 
-import "github.com/LSapee/potatocoin/blockchain"
+import (
+	"github.com/LSapee/potatocoin/blockchain"
+	"github.com/LSapee/potatocoin/cli"
+	"github.com/LSapee/potatocoin/db"
+)
 
 func main() {
-	blockchain.Blockchain().AddBlock("First")
+	defer db.Close()
+	blockchain.Blockchain()
+	cli.Start()
 }
