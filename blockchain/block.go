@@ -12,13 +12,13 @@ import (
 // 일단은 difficulty를 2로 지정해주
 
 type Block struct {
-	Data       string `json:"data"`
-	Hash       string `json:"hash"`
-	PrevHash   string `json:"prevHash,omitempty"`
-	Height     int    `json:"height"`
-	Difficulty int    `json:"difiiculty"`
-	Nonce      int    `json:"nonce"`
-	Timestamp  int    `json:"timestamp"`
+	Hash         string `json:"hash"`
+	PrevHash     string `json:"prevHash,omitempty"`
+	Height       int    `json:"height"`
+	Difficulty   int    `json:"difiiculty"`
+	Nonce        int    `json:"nonce"`
+	Timestamp    int    `json:"timestamp"`
+	Transactions []*Tx  `json:"transactions"`
 }
 
 func (b *Block) persist() {
@@ -57,14 +57,14 @@ func (b *Block) mine() {
 	}
 }
 
-func createBlock(data string, prevHash string, height int) *Block {
+func createBlock(prevHash string, height int) *Block {
 	block := &Block{
-		Data:       data,
-		Hash:       "",
-		PrevHash:   prevHash,
-		Height:     height,
-		Difficulty: Blockchain().difficulty(),
-		Nonce:      0,
+		Hash:         "",
+		PrevHash:     prevHash,
+		Height:       height,
+		Difficulty:   Blockchain().difficulty(),
+		Nonce:        0,
+		Transactions: []*Tx{mackCoinbaseTx("potato")},
 	}
 	block.mine()
 	block.persist()
