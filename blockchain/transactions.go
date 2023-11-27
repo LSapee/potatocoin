@@ -1,6 +1,7 @@
 package blockchain
 
 import (
+	"errors"
 	"github.com/LSapee/potatocoin/utils"
 	"time"
 )
@@ -10,6 +11,12 @@ import (
 const (
 	minerReward int = 50
 )
+
+type mempool struct {
+	Txs []*Tx
+}
+
+var Mempool *mempool = &mempool{}
 
 type Tx struct {
 	Id        string   `json:"id"`
@@ -46,4 +53,22 @@ func mackCoinbaseTx(address string) *Tx {
 	}
 	tx.getId()
 	return &tx
+}
+
+func makeTx(from, to string, amount int) (*Tx, error) {
+	//잔고가 부족할때 보낼수 없음
+	if Blockchain().BalanceByAddress(from) < amount {
+		return nil, errors.New("not enough money")
+	}
+	//잔고가 있을 때
+
+}
+
+func (m *mempool) AddTx(to string, amount int) error {
+	tx, err := makeTx("potato", to, amount)
+	if err != nil {
+		return err
+	}
+	m.Txs = append(m.Txs, tx)
+	return nil
 }
