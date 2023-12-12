@@ -1,11 +1,9 @@
 package main
 
-import (
-	"github.com/LSapee/potatocoin/cli"
-	"github.com/LSapee/potatocoin/db"
-)
+import "github.com/LSapee/potatocoin/wallet"
 
 func main() {
-	defer db.Close()
-	cli.Start()
+	wallet.Start()
+	//defer db.Close()
+	//cli.Start()
 }
