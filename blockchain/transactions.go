@@ -3,6 +3,7 @@ package blockchain
 import (
 	"errors"
 	"github.com/LSapee/potatocoin/utils"
+	"github.com/LSapee/potatocoin/wallet"
 	"time"
 )
 
@@ -109,7 +110,7 @@ func makeTx(from, to string, amount int) (*Tx, error) {
 }
 
 func (m *mempool) AddTx(to string, amount int) error {
-	tx, err := makeTx("potato", to, amount)
+	tx, err := makeTx(wallet.Wallet().Address, to, amount)
 	if err != nil {
 		return err
 	}
@@ -119,7 +120,7 @@ func (m *mempool) AddTx(to string, amount int) error {
 
 // 승인이 필요한 것을 가져오기
 func (m *mempool) txToConfirm() []*Tx {
-	coinbase := makeCoinbaseTx("potato")
+	coinbase := makeCoinbaseTx(wallet.Wallet().Address)
 	txs := m.Txs
 	txs = append(txs, coinbase)
 	// mempool을 비워주기
