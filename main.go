@@ -1,6 +1,8 @@
 package main
 
-import "github.com/LSapee/potatocoin/wallet"
+import (
+	"github.com/LSapee/potatocoin/wallet"
+)
 
 func main() {
 	wallet.Start()
