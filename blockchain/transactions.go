@@ -26,28 +26,50 @@ type Tx struct {
 	TxOuts    []*TxOut `json:"txOuts"`
 }
 
+type TxIn struct {
+	TxID      string `json:"txId"`
+	Index     int    `json:"index"`
+	Signature string `json:"signature"`
+}
+type TxOut struct {
+	Address string `json:"address""`
+	Amount  int    `json:"amount"`
+}
+type UTxOut struct {
+	TxID   string `json:"txID"`
+	Index  int    `json:"index"`
+	Amount int    `json:"amount"`
+}
+
 func (t *Tx) getId() {
 	t.ID = utils.Hash(t)
 }
 
-type TxIn struct {
-	TxID  string `json:"txId"`
-	Index int    `json:"index"`
-	Owner string `json:"owner"`
+func (t *Tx) sign() {
+	for _, txIn := range t.TxIns {
+		txIn.Signature = wallet.Sign(t.ID, wallet.Wallet())
+	}
 }
-type TxOut struct {
-	Owner  string
-	Amount int
-}
-type UTxOut struct {
-	TxID   string
-	Index  int
-	Amount int
+
+func validate(tx *Tx) bool {
+	valid := true
+	for _, txIn := range tx.TxIns {
+		prevTx := FindTx(Blockchain(), txIn.TxID)
+		if prevTx == nil {
+			valid = false
+			break
+		}
+		address := prevTx.TxOuts[txIn.Index].Address
+		valid = wallet.Verify(txIn.Signature, tx.ID, address)
+		if !valid {
+			break
+		}
+	}
+	return valid
 }
 
 func isOnMempool(UTxOut *UTxOut) bool {
 	exists := false
-
 Outer:
 	for _, tx := range Mempool.Txs {
 		for _, input := range tx.TxIns {
@@ -77,9 +99,12 @@ func makeCoinbaseTx(address string) *Tx {
 	return &tx
 }
 
+var ErrorNoMoney = errors.New("돈 없어요")
+var ErrorNoValid = errors.New("Tx Invalid")
+
 func makeTx(from, to string, amount int) (*Tx, error) {
 	if BalanceByAddress(from, Blockchain()) < amount {
-		return nil, errors.New("Not enoguh money")
+		return nil, errors.New("Not enough money")
 	}
 	var txOuts []*TxOut
 	var txIns []*TxIn
@@ -106,6 +131,11 @@ func makeTx(from, to string, amount int) (*Tx, error) {
 		TxOuts:    txOuts,
 	}
 	tx.getId()
+	tx.sign()
+	valid := validate(tx)
+	if !valid {
+		return nil, ErrorNoValid
+	}
 	return tx, nil
 }
 

@@ -4,13 +4,18 @@ http://localhost:4000/
 
 http://localhost:4000/blocks
 
+
+### 지갑 조회
+
+http://localhost:4000/wallet
+
 ### 마지막으로 생성된 블록 조회하기 (Difficulty를 확인 하기 위한 조회)
 
 http://localhost:4000/status
 
 ### 해당 유저의 잔액 내역 조회
 
-http://localhost:4000/balance/lee
+http://localhost:4000/balance/ff2cf7f4b380ee95b923b700a5cc4bc0a004fe458bbed5e791670254096c8d08a4bbf289e62fe77070b3d0df84d939688637c5cbfc6f7e0752b4d11223f21fe8
 
 ### 해당 유저의 잔액 전체 조회
 
