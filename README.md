@@ -16,3 +16,8 @@ env 설정
 ```
 go get github.com/joho/godotenv
 ```
+
+실행 
+```
+go run main.go -port=3000 -mode=rest
+```

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+    <form>
+        <input type="text" />
+        <button type="submit">보내기</button>
+    </form>
+    <span>여기에 채팅이 생김</span>
+</body>
+<script>
+    const form = document.querySelector("form");
+    const span = document.querySelector("span");
+    const input = document.querySelector("input");
+    const socket = new WebSocket("ws://localhost:4000/ws")
+    socket.addEventListener("message",(e)=>{
+        span.innerHTML= span.innerHTML+ `\n${e.data}`
+    })
+    form.addEventListener("submit",(e)=>{
+        e.preventDefault();
+        socket.send(input.value);
+    })
+    socket.addEventListener("close",()=>{
+        console.log("끊겼다 이누마");
+    })
+    socket.addEventListener("open",()=>{
+        console.log("연결됨");
+    })
+
+</script>
+</html>
